@@ -22,4 +22,6 @@ class BlagAdmin(admin.ModelAdmin):
     list_display = ('title', 'enable')
 
 
-admin.site.register(Blog, BlagAdmin)
+class Comments(models.Model):
+    title = models.TextField()
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)

@@ -4,13 +4,72 @@ from rest_framework.generics import GenericAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
-from apps.blog.models import Category, Blog
-from apps.blog.serializers import CategorySerializer, BlogSerializer
+from apps.blog.models import Category, Blog, Comments
+from apps.blog.serializers import CategorySerializer, BlogSerializer, CommentsSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+
+"""
+    COMMENTS
+"""
+
+
+class CommentsViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentsSerializer
+    queryset = Comments.objects.all()
+
+
+class CommentsListView(GenericAPIView):
+    serializer_class = CommentsSerializer
+
+    permission_classes = (AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        comments = Comments.objects.all()
+
+        return Response(CommentsSerializer(comments, many=True).data)
+
+
+class CommentsRegisterView(GenericAPIView):
+    serializer_class = CommentsSerializer
+
+    permission_classes = (AllowAny,)
+    authentication_classes = ()
+
+    @serialize_decorator(CommentsSerializer)
+    def post(self, request):
+        validated_data = request.serializer.validated_data
+
+        comments = Comments.objects.create(
+            title=validated_data['title'],
+            blog=validated_data['blog'],
+        )
+
+        comments.save()
+
+        return Response(CommentsSerializer(comments).data)
+
+
+class CommentItemView(GenericAPIView):
+    serializer_class = CommentsSerializer
+
+    permission_classes = (AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request, pk):
+        comments = get_object_or_404(Comments.objects.filter(pk=pk))
+
+        return Response(CommentsSerializer(comments).data)
+
+
+"""
+    BLOG
+"""
 
 
 class BlogListView(GenericAPIView):
@@ -43,11 +102,8 @@ class BlogRegisterView(GenericAPIView):
     permission_classes = (AllowAny,)
     authentication_classes = ()
 
-
-
     @serialize_decorator(BlogSerializer)
     def post(self, request):
-
         validated_data = request.serializer.validated_data
 
         blog = Blog.objects.create(
