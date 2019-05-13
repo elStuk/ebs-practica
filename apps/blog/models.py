@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 
 
 # Create your models here.
@@ -14,3 +15,11 @@ class Blog(models.Model):
     body = models.TextField()
     posted = models.DateField(db_index=True, auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    enable = models.BooleanField(default=True)
+
+
+class BlagAdmin(admin.ModelAdmin):
+    list_display = ('title', 'enable')
+
+
+admin.site.register(Blog, BlagAdmin)
