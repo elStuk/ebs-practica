@@ -58,6 +58,7 @@ class CommentsRegisterView(GenericAPIView):
 class CommentItemView(GenericAPIView):
     serializer_class = CommentsSerializer
 
+
     permission_classes = (AllowAny,)
     authentication_classes = ()
 
@@ -73,7 +74,7 @@ class CommentItemView(GenericAPIView):
 
 
 class BlogListView(GenericAPIView):
-    serializer_class = BlogSerializer
+    serializer_class = BlogSerializer, CommentsSerializer
 
     permission_classes = (AllowAny,)
     authentication_classes = ()
@@ -85,15 +86,16 @@ class BlogListView(GenericAPIView):
 
 
 class BlogItemView(GenericAPIView):
-    serializer_class = BlogSerializer
+    serializer_class = BlogSerializer, CommentsSerializer
 
     permission_classes = (AllowAny,)
     authentication_classes = ()
 
     def get(self, request, pk):
         blog = get_object_or_404(Blog.objects.filter(pk=pk))
+        comments = Comments.objects.all()
 
-        return Response(BlogSerializer(blog).data)
+        return Response((BlogSerializer(blog).data, CommentsSerializer(comments, many=True).data))
 
 
 class BlogRegisterView(GenericAPIView):
