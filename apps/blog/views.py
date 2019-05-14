@@ -97,7 +97,11 @@ class BlogItemView(GenericAPIView):
     def get(self, request, pk):
         blog = get_object_or_404(Blog.objects.filter(pk=pk))
         comments = Comments.objects.filter(blog_id=blog.id)
-        return Response((BlogSerializer(blog).data, CommentsSerializer(comments, many=True).data))
+
+        blog_and_comments = BlogSerializer(blog).data.copy()
+        blog_and_comments.update({'comments': CommentsSerializer(comments, many=True).data})
+
+        return Response(blog_and_comments)
 
 
 class BlogRegisterView(GenericAPIView):
