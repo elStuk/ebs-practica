@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from apps.blog.models import Category, Blog, Comments
-from apps.blog.serializers import CategorySerializer, BlogSerializer, CommentsSerializer, BlogCommentsSerializer
+from apps.blog.serializers import CategorySerializer, BlogSerializer, CommentsSerializer
 
 """
     Category
