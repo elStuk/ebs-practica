@@ -96,8 +96,14 @@ class BlogItemView(GenericAPIView):
 
     def get(self, request, pk):
         blog = get_object_or_404(Blog.objects.filter(pk=pk))
+<<<<<<< HEAD
         response_data = BlogCommentsSerializer(blog).data
         return Response(response_data)
+=======
+        comments = Comments.objects.filter(blog_id=blog.id)
+
+        return Response((BlogSerializer(blog).data, CommentsSerializer(comments, many=True).data))
+>>>>>>> task7
 
 
 class BlogRegisterView(GenericAPIView):
