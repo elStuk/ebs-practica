@@ -22,3 +22,13 @@ class CommentsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class BlogCommentsSerializer(serializers.ModelSerializer):
+    comments = serializers.SerializerMethodField()
+
+    def get_comments(self, obj):
+        comments = Comments.objects.filter(id=obj.id)
+        return CommentsSerializer(comments, many=True).data
+
+    class Meta:
+        model = Blog
+        fields = ['title', 'slug', 'body', 'posted', 'category', 'enable', 'comments']
