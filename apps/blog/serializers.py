@@ -26,7 +26,7 @@ class BlogCommentsSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
 
     def get_comments(self, obj):
-        comments = Comments.objects.filter(id=obj.id)
+        comments = Comments.objects.filter(blog_id=obj.id)
         return CommentsSerializer(comments, many=True).data
 
     class Meta:
